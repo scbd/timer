@@ -1,0 +1,134 @@
+<html>
+<head>
+ <script src="https://momentjs.com/downloads/moment.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+ <style>
+     body {
+        position:relative;
+        padding: 0px;
+        margin: 0px;
+        background-color: #202020;
+        height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+     }
+    
+     #timer {
+        text-align: center;
+        color: white;
+        font-size: 55vh;
+        padding-top: 10vh;
+     }
+     
+     .logo {
+        position: absolute;
+        bottom:10px; 
+        left:10px; 
+     }
+
+     .logo > img {
+        height: 35vh;
+     }
+
+     .controls {
+        position: absolute;
+        bottom:5px; 
+        right:5px; 
+        font-size: 10vh;
+     }
+     
+     a.control {
+        display: inline-block;
+        margin:10px; 
+        margin-right:10px; 
+     }
+
+     .dimmed {
+        color: #171717 !important
+     }
+
+ </style>
+</head>
+<body>
+
+    <div id="app">
+        
+        <div id="timer" :class="{ dimmed: !visible }">{{ timeSpan }}</div>
+
+        <div class="controls">
+            <a class="control dimmed" @click="visible = false"  v-if="visible" ><i class="far fa-eye"></i></a>
+            <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
+            <a class="control dimmed" @click="start()" v-if="paused"><i class="fas fa-play"></i></a>
+            <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
+            <a class="control dimmed" @click="stop(); reset()" ><i class="fas fa-fast-backward"></i></a>
+        </div>
+
+
+        <div class="logo">
+            <img src="https://www.cbd.int/themes/custom/bootstrap_sass/images/CBD_logo_green.png">
+        </div>
+                
+    </div>
+
+    <script>
+
+        var app = new Vue({
+          el: '#app',
+          data: () => ({
+            elapsed: 0,
+            paused: true,
+            visible: true
+          }),
+          computed : {
+            timeSpan () {
+                const diff = moment.duration(this.elapsed);
+                return `${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
+            }
+          },
+          methods : {
+            incrementDelay,
+            reset,
+            start,
+            stop
+          },
+          mounted : function() {
+              
+            this.reset();
+
+            setInterval(()=> { 
+              if(this.paused) return;
+
+              this.incrementDelay(250) }, 250);
+          } 
+        })        
+
+        function incrementDelay(inc) {
+            this.elapsed += inc;
+        }
+
+        function start() {
+            this.paused = false;
+            this.visible = true
+        }
+
+        function stop() {
+            this.paused = true;
+        }
+
+        function reset() {
+            this.elapsed = 0;
+        }
+        
+        function pad0(val, length) {
+
+            val = val.toString()
+
+            while(val.length<length)
+                val = "0"+val;
+                
+            return val;
+        }
+    </script>
+
+</body>
+</html>
