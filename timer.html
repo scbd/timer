@@ -81,7 +81,7 @@
             <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
             <a class="control dimmed" @click="start()" v-if="paused"><i class="fas fa-play"></i></a>
             <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
-            <a class="control dimmed" @click="stop(); reset()" ><i class="fas fa-fast-backward"></i></a>
+            <a class="control dimmed" @click="stop(); reset(); visible = false" ><i class="fas fa-fast-backward"></i></a>
         </div>
 
 
@@ -98,7 +98,7 @@
           data: () => ({
             elapsed: 0,
             paused: true,
-            visible: true
+            visible: false
           }),
           computed : {
             timeSpan () {
