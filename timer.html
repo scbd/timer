@@ -20,7 +20,9 @@
         font-size: 55vh;
         padding-top: 5vh;
      }
-     
+     #timer.negative{
+         color: red;
+     }
      .logo {
         position: absolute;
         bottom:40px; 
@@ -73,14 +75,14 @@
     <div id="app">
         <br/><br/>
         <input type="text" class="item"></br>
-        <div id="timer" v-if="visible">{{ timeSpan }}</div>
+        <div id="timer" v-if="visible" v-bind:class="{'negative':elapsed<0}">{{ timeSpan }}</div>
 
 
         <div class="controls">
             <a class="control dimmed" @click="visible = false"  v-if="visible" ><i class="far fa-eye"></i></a>
             <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
             <a class="control dimmed" @click="start(0, 250)" v-if="paused"><i class="fas fa-play"></i></a>
-            <a class="control dimmed" @click="start(3, -250)" v-if="paused"><i class="fas fa-step-forward"></i></a>
+            <a class="control dimmed" @click="start(1, -250)" v-if="paused"><i class="fas fa-step-forward"></i></a>
             <a class="control dimmed" @click="start(5, -250)" v-if="paused"><i class="fas fa-fast-forward"></i></a>
             <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
             <a class="control dimmed" @click="stop(); reset(); visible = false" ><i class="fas fa-fast-backward"></i></a>
@@ -101,12 +103,14 @@
             elapsed: 0,
             paused: true,
             visible: false,
-            delayBy:250 //ms
+            delayBy:250, //ms,
+            resetTimer:true
           }),
           computed : {
             timeSpan () {
                 const diff = moment.duration(this.elapsed);
-                return `${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
+                const negative = this.elapsed < 0;
+                return `${negative?'-':''}${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
             }
           },
           methods : {
@@ -131,9 +135,10 @@
         }
 
         function start(startFrom, delay) {
-            this.paused = false;
-            this.visible = true
-            this.elapsed = ((startFrom||0)*60*1000)+500 //extra 500 ms so that 3:00 is displayed
+            this.elapsed    = !this.resetTimer ? this.elapsed : ((startFrom||0)*60*1000)+500 //extra 500 ms so that 3:00 is displayed
+            this.paused     = false;
+            this.visible    = true
+            this.resetTimer = false;
             this.delayBy = delay||250//ms
         }
 
@@ -143,11 +148,12 @@
 
         function reset() {
             this.elapsed = 0;
+            this.resetTimer = true;
         }
         
         function pad0(val, length) {
 
-            val = val.toString()
+            val = Math.abs(val).toString()
 
             while(val.length<length)
                 val = "0"+val;
