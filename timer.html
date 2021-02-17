@@ -82,7 +82,7 @@
             <a class="control dimmed" @click="visible = false"  v-if="visible" ><i class="far fa-eye"></i></a>
             <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
             <a class="control dimmed" @click="start(0, 250)" v-if="paused"><i class="fas fa-play"></i></a>
-            <a class="control dimmed" @click="start(1, -250)" v-if="paused"><i class="fas fa-step-forward"></i></a>
+            <a class="control dimmed" @click="start(3, -250)" v-if="paused"><i class="fas fa-step-forward"></i></a>
             <a class="control dimmed" @click="start(5, -250)" v-if="paused"><i class="fas fa-fast-forward"></i></a>
             <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
             <a class="control dimmed" @click="stop(); reset(); visible = false" ><i class="fas fa-fast-backward"></i></a>
@@ -108,6 +108,10 @@
           }),
           computed : {
             timeSpan () {
+
+                if(this.elapsed < 0){
+                    this.pause();
+                }
                 const diff = moment.duration(this.elapsed);
                 const negative = this.elapsed < 0;
                 return `${negative?'-':''}${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
