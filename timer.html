@@ -24,11 +24,11 @@
      .logo {
         position: absolute;
         bottom:40px; 
-        left:40px; 
+        left:192px; 
      }
 
      .logo > img {
-        height: 30vh;
+        height: 25vh;
      }
 
      .controls {
@@ -53,33 +53,35 @@
         background-color: #00000000;
         color: #009b48;
         font-size: 10vh;
-        width: 50%;
+        /* width: 50%; */
         position: absolute;
-        bottom: 16vh;
-        right:0px;
+        /* bottom: 16vh; */
+        /* right:0px; */
         border: none;
         text-align: center;
+        width: 100%;
      }
 
      input.item:focus{
         outline: none;
      }
-}
 
  </style>
 </head>
 <body>
 
     <div id="app">
-        
+        <br/><br/>
+        <input type="text" class="item"></br>
         <div id="timer" v-if="visible">{{ timeSpan }}</div>
 
-        <input type="text" class="item">
 
         <div class="controls">
             <a class="control dimmed" @click="visible = false"  v-if="visible" ><i class="far fa-eye"></i></a>
             <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
-            <a class="control dimmed" @click="start()" v-if="paused"><i class="fas fa-play"></i></a>
+            <a class="control dimmed" @click="start(0, 250)" v-if="paused"><i class="fas fa-play"></i></a>
+            <a class="control dimmed" @click="start(3, -250)" v-if="paused"><i class="fas fa-step-forward"></i></a>
+            <a class="control dimmed" @click="start(5, -250)" v-if="paused"><i class="fas fa-fast-forward"></i></a>
             <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
             <a class="control dimmed" @click="stop(); reset(); visible = false" ><i class="fas fa-fast-backward"></i></a>
         </div>
@@ -98,7 +100,8 @@
           data: () => ({
             elapsed: 0,
             paused: true,
-            visible: false
+            visible: false,
+            delayBy:250 //ms
           }),
           computed : {
             timeSpan () {
@@ -119,7 +122,7 @@
             setInterval(()=> { 
               if(this.paused) return;
 
-              this.incrementDelay(250) }, 250);
+              this.incrementDelay(this.delayBy) }, Math.abs(this.delayBy));
           } 
         })        
 
@@ -127,9 +130,11 @@
             this.elapsed += inc;
         }
 
-        function start() {
+        function start(startFrom, delay) {
             this.paused = false;
             this.visible = true
+            this.elapsed = ((startFrom||0)*60*1000)+500 //extra 500 ms so that 3:00 is displayed
+            this.delayBy = delay||250//ms
         }
 
         function stop() {
