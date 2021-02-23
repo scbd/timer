@@ -82,6 +82,7 @@
             <a class="control dimmed" @click="visible = false"  v-if="visible" ><i class="far fa-eye"></i></a>
             <a class="control dimmed" @click="visible = true" v-if="!visible"><i class="far fa-eye-slash"></i></a>
             <a class="control dimmed" @click="start(0, 250)" v-if="paused"><i class="fas fa-play"></i></a>
+            <a class="control dimmed" @click="start(2, -250)" v-if="paused"><i class="fas fa-step-backward"></i></a>
             <a class="control dimmed" @click="start(3, -250)" v-if="paused"><i class="fas fa-step-backward"></i></a>
             <a class="control dimmed" @click="start(5, -250)" v-if="paused"><i class="fas fa-fast-backward"></i></a>
             <a class="control dimmed" @click="stop()"  v-if="!paused"><i class="fas fa-pause"></i></a>
@@ -140,10 +141,10 @@
 
         function start(startFrom, delay) {
             this.elapsed    = !this.resetTimer ? this.elapsed : ((startFrom||0)*60*1000)+500 //extra 500 ms so that 3:00 is displayed
+            this.delayBy    = !this.resetTimer ? this.delayBy : (delay||250)//ms
             this.paused     = false;
             this.visible    = true
             this.resetTimer = false;
-            this.delayBy = delay||250//ms
         }
 
         function stop() {
