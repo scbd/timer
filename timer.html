@@ -110,12 +110,12 @@
           computed : {
             timeSpan () {
 
-                if(this.elapsed < 0){
-                    this.pause();
-                }
+                // if(this.elapsed < 0){
+                //     this.pause();${negative?'-':''}
+                // }
                 const diff = moment.duration(this.elapsed);
                 const negative = this.elapsed < 0;
-                return `${negative?'-':''}${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
+                return `${pad0(diff.minutes(),1)}:${pad0(diff.seconds(), 2)}`;
             }
           },
           methods : {
